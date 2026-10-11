@@ -1,0 +1,11 @@
+'use client';
+import Image from 'next/image';
+import {useRef,useState} from 'react';
+import {Expand,X,ArrowLeft,ArrowRight} from 'lucide-react';
+import {photos} from '@/lib/photos';
+export default function PhotoGallery({items=['site','excavation','landscape'],title='Презентациядағы фотосуреттер'}:{items?:string[];title?:string}){
+  const [active,setActive]=useState(0);const dialog=useRef<HTMLDialogElement>(null);
+  const selected=photos[items[active]];
+  function move(amount:number){setActive(i=>(i+amount+items.length)%items.length)}
+  return <section className="photo-gallery"><div className="gallery-heading"><p className="eyebrow">ФОТОМҰРАҒАТ</p><h2>{title}</h2><p>Суреттер жоба презентациясынан бастапқы сапасында алынған.</p></div><div className={`photo-grid ${items.length===1?'single-photo':''}`}>{items.map((key,i)=>{const p=photos[key];return <figure key={key}><button className="photo-open" onClick={()=>{setActive(i);dialog.current?.showModal()}} aria-label={`${p.title} — үлкейту`}><Image src={p.src} width={p.width} height={p.height} alt={p.title} className={key==='coin'?'reference-photo':''} sizes="(max-width: 760px) 90vw, 45vw"/><span><Expand size={17}/></span></button><figcaption><strong>{p.title}</strong><span>{p.caption}</span><a href={`/presentation.pdf#page=${p.page}`} target="_blank" rel="noreferrer">Дерек: презентация, {p.page}-бет ↗</a></figcaption></figure>})}</div><dialog className="photo-dialog" ref={dialog} onClick={e=>{if(e.target===dialog.current)dialog.current.close()}} onKeyDown={e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1)}}><button className="close-photo" onClick={()=>dialog.current?.close()} aria-label="Фотосуретті жабу"><X/></button><Image src={selected.src} width={selected.width} height={selected.height} alt={selected.title} sizes="90vw"/><div className="photo-dialog-bottom"><button disabled={items.length===1} onClick={()=>move(-1)} aria-label="Алдыңғы фотосурет"><ArrowLeft/></button><p><strong>{selected.title}</strong><span>{active+1} / {items.length} · Презентация, {selected.page}-бет</span></p><button disabled={items.length===1} onClick={()=>move(1)} aria-label="Келесі фотосурет"><ArrowRight/></button></div></dialog></section>
+}

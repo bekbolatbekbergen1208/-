@@ -1,0 +1,7 @@
+'use client';
+import Link from 'next/link';
+import {usePathname} from 'next/navigation';
+import {useState} from 'react';
+import {Menu,X,ArrowUpRight} from 'lucide-react';
+import {links} from '@/lib/content';
+export default function Shell({children}:{children:React.ReactNode}){const [open,setOpen]=useState(false);const path=usePathname();return <><a className="skip" href="#main">Мазмұнға өту</a><header><Link href="/" className="brand"><span className="brand-symbol">⌘</span><span>QARAQABAQ<small>ЦИФРЛЫҚ МҰРА</small></span></Link><nav aria-label="Негізгі мәзір" className={open?'open':''}>{links.map(([href,label])=><Link key={href} href={href} aria-current={path===href?'page':undefined} onClick={()=>setOpen(false)}>{label}</Link>)}</nav><Link href="/expedition" className="header-cta">Зерттеуді бастау <ArrowUpRight size={16}/></Link><button className="menu" aria-label="Мәзір" aria-expanded={open} onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button></header><main id="main">{children}</main><footer><div><Link className="brand" href="/">QARAQABAQ</Link><p>Бір тиын — екі мыңжылдық тарих.</p></div><div className="footer-links">{[['/artifacts','Жәдігерлер'],['/timeline','Уақыт желісі'],['/tour','Виртуалды экскурсия'],['/games','Танымдық ойындар'],['/sources','Дереккөздер'],['/about','Жоба туралы']].map(([href,label])=><Link key={href} href={href}>{label}</Link>)}</div><small>© 2026 · Сергей Ұлпан, Қуанған Аянат<br/>Ғылыми дәлдік. Ашық дерек. Тарихқа құрмет.</small></footer></>}
